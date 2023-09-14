@@ -3,18 +3,24 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate,login,logout
 from .models import *
 from django.contrib import messages
-import re
 from django.contrib.auth.decorators import login_required
+import re
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import PostSerializers
+
+
+
 
 
 # Create your views here.
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def index(request):
     user=request.user.username
     posts=Post.objects.filter(published_status=True)
     return render(request,'index.html',{'user':user,'posts':posts})
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def profile(request):
     user=request.user.username
     user_posts=Post.objects.filter(user=user)
@@ -81,13 +87,13 @@ def signin(request):
     else:
         return render(request,'signin.html')
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def signout(request):
     logout(request)
     request.session.flush()
     return redirect(signin)
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def createpost(request):
     if request.method =='POST':
         user= request.user.username
@@ -102,14 +108,14 @@ def createpost(request):
     else:
         return redirect(profile)
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def deletepost(request,id):
     user=request.user.username
     user_post=Post.objects.get(id=id)
     user_post.delete()
     return redirect(profile)
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def publish(request,id):
     user_post=Post.objects.get(id=id)
     if user_post.published_status==False:
@@ -123,7 +129,7 @@ def publish(request,id):
 
     
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def unpublish(request,id):
     user_post=Post.objects.get(id=id)
     if user_post.published_status==True:
@@ -135,7 +141,7 @@ def unpublish(request,id):
         messages.info(request,'Post is already unpublished')
         return redirect(profile)
 
-# @login_required(login_url='signin')
+@login_required(login_url='signin')
 def like(request):
     username=request.user.username
     post_id=request.GET.get('post_id')
@@ -155,3 +161,10 @@ def like(request):
         post.no_of_likes=post.no_of_likes-1
         post.save()
         return redirect(index)
+
+@api_view(['GET'])
+def post_list(request):
+    if request.method=='GET':
+        items=Post.objects.all()
+        serializer= PostSerializers(items,many=True)
+        return Response(serializer.data)

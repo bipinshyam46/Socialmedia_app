@@ -11,7 +11,8 @@ urlpatterns = [
     path('deletepost/<str:id>',views.deletepost),
     path('publish/<str:id>',views.publish),
     path('unpublish/<str:id>',views.unpublish),
-    path('like',views.like)
+    path('like',views.like),
+    path('postlist',views.post_list)
 
 
 ]
