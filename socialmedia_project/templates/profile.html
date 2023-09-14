@@ -1,0 +1,197 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+	<title>Profile - {{username}}</title>
+   <!-- <link rel="icon" href="images/fav.png" type="image/png" sizes="16x16"> -->
+    
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/color.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+	<!-- Bootstrap CSS -->
+	<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+</head>
+<body>
+<!--<div class="se-pre-con"></div>-->
+<div class="theme-layout">
+	
+	</div>
+	
+	<section>
+			<div class="feature-photo">
+				<figure><img src="{% static 'images/resources/timeline-1.jpg' %}" alt=""></figure>
+				<form>
+					<div class="add-btn">
+					<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a href="index">Home</a></u></b></span>
+					<!-- <button style="background-color: #ffc0cb; border: #ffc0cb;" data-toggle="modal" data-target="#exampleModal">Create new post</button> -->
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Create new post</button>
+					</div>
+				</form>
+
+				
+				<div class="container-fluid">
+					<div class="row merged">
+						<!-- <div class="col-lg-2 col-sm-3">
+							<div class="user-avatar">
+								<figure>
+									<img src="https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 250px; width: 100%;" alt="">
+									<form class="edit-phto">
+										<i class="fa fa-camera-retro"></i>
+										<label class="fileContainer">
+											<a href="#account-settings">Upload Profile Photo</a>
+										</label>
+									</form>
+								</figure>
+							</div>
+						</div> -->
+						<div class="col-lg-10 col-sm-9">
+							<div class="timeline-info">
+								<ul>
+									<li class="admin-name">
+									  <h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;"><b>@{{user}}</b><!--<i class="fa fa-check-circle" style="color: #48dbfb;" aria-hidden="true"></i>--></h5>
+									  <!--<span>Group Admin</span>-->
+									</li>
+									
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section><!-- top area -->
+		
+		<!-- modal starts -->
+		<div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <h5 class="modal-title" id="exampleModalLabel">Create new post</h5>
+				  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				  </button>
+				</div>
+				<div class="modal-body">
+				  <form method="POST" action="createpost" >
+					  {% csrf_token %}
+					<div class="form-group">
+					  <label for="title" class="col-form-label">Title:</label>
+					  <input type="text" name="title" class="form-control" id="title">
+					</div>
+					<div class="form-group">
+					  <label for="message-text" class="col-form-label">Description:</label>
+					  <textarea class="form-control" name="description" id="message-text"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="tags" class="col-form-label">Tags:</label>
+						<textarea class="form-control" name="tags" id="tags"></textarea>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Save post</button>
+					  </div>
+				  </form>
+				</div>
+				
+			  </div>
+			</div>
+		  </div>
+		<!--  modal ends -->
+		
+		
+	<section>
+		<div class="gap gray-bg">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="row" id="page-contents">
+							<div class="col-lg-3">
+								<aside class="sidebar static">
+									
+									
+									
+								</aside>
+							</div><!-- sidebar -->
+							<div>
+								<style>
+									h5{
+										color: red;
+									}
+								</style>
+								{% for message in messages %}
+								<h5>{{message}}</h5>
+								{% endfor %}
+							</div>
+
+							<div class="col-lg-6">
+								<div class="central-meta">
+									<ul class="photos">
+							{% for posts in user_posts %}
+
+										<li>
+											<div class="card" style="width: 18rem;">
+												<div class="card-body">
+												  <h5 class="card-title">{{posts.title}}</h5>
+												  <p class="card-text">{{posts.description}}.</p>
+												</div>
+												<ul class="list-group list-group-flush">
+												  <li class="list-group-item">{{posts.tags}}</li>
+												  <li class="list-group-item">{{posts.created_at|date:"d M, Y"}}</li>
+												</ul>
+												<div class="card-body">
+													
+												  <a href="/deletepost/{{posts.id}}" class="btn btn-danger btn-sm">Delete post</a>
+												  <a href="/publish/{{posts.id}}" class="btn btn-primary btn-sm">Publish post</a>
+												  <a href="/unpublish/{{posts.id}}" class="btn btn-primary btn-sm">Unublish post</a>
+
+												</div>
+											  </div>
+										</li>
+
+							{% endfor %}
+										
+										
+									</ul>
+
+									<!--<div class="lodmore"><button class="btn-view btn-load-more"></button></div>-->
+								</div><!-- photos -->
+							</div><!-- centerl meta -->
+							<div class="col-lg-3">
+								<aside class="sidebar static">
+									
+								</aside>
+							</div><!-- sidebar -->
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>	
+	</section>
+
+	
+	
+	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="js/main.min.js"></script>
+	<script src="{% static 'js/script.js' %}"></script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>	
+
+</html>
+
+
+
+
+	
+  
